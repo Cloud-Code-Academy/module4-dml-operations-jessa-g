@@ -17,7 +17,7 @@
  * The methods within this class serve as practical examples of different DML operations,
  * allowing developers to learn through practice and examples.
  *
- * @author Your Name
+ * @author Jessa Graham
  */
 
 
@@ -31,13 +31,14 @@ public with sharing class DMLOperations {
      */
     public static Id insertNewAccount() {
         // Create a new Account instance
-
+        Account myAccount = new Account();
         // Set some fields on the Account
-
+        myAccount.Name = 'Test Account';
+        myAccount.BillingCity = 'Saint Louis';
         // Insert the Account into the database
-
+        insert myAccount;
         // Return the Id of the newly created Account
-        return null;
+        return myAccount.Id;
     }
 
     /**
@@ -48,8 +49,9 @@ public with sharing class DMLOperations {
      */
     public static void createAccount(String name, String industry) {
         // Create a new Account and set the fields inline
-
+        Account mySecondAccount = new Account(Name = name, Industry = industry);
         // Insert the Account
+        insert mySecondAccount;
     }
 
     
@@ -61,14 +63,15 @@ public with sharing class DMLOperations {
      */
     public static Id insertNewContact(Id accountId) {
         // Create a new Contact instance
-
+        Contact newContact = new Contact();
         // Set some fields on the Contact
+        newContact.LastName = 'Graham';
         // Set the AccountId field to the given accountId
-
+        newContact.AccountId = accountId;
         // Insert the Contact into the database
-
+        insert newContact;
         // Return the Id of the newly created Contact
-        return null;
+        return newContact.Id;
     }
 
     /**
@@ -81,10 +84,11 @@ public with sharing class DMLOperations {
     public static void updateContactLastName(Id contactId, String newLastName) {
         // Retrieve the Contact from the database
         // [SELECT Id FROM Contact WHERE Id = :contactId]
-
+        Contact contactToUpdate = [SELECT Id FROM Contact WHERE Id = :contactId];
         // Update the Contact's last name
-
+        contactToUpdate.LastName = newLastName;
         // Update the Contact in the database
+        update contactToUpdate;
     }
 
     /**
@@ -97,10 +101,12 @@ public with sharing class DMLOperations {
     public static void updateOpportunityStage(Id oppId, String newStage) {
         // Retrieve the Opportunity from the database
         // [SELECT Id FROM Opportunity WHERE Id = :oppId]
+        Opportunity oppToUpdate = [SELECT Id FROM Opportunity WHERE Id = :oppId];
 
         // Update the Opportunity's stage
-
+        oppToUpdate.StageName = newStage;
         // Update the Opportunity in the database
+        update oppToUpdate;
     }
 
     /**
@@ -115,6 +121,12 @@ public with sharing class DMLOperations {
         // Query the account
         // [SELECT Id FROM Account WHERE Id = :accountId]
 
+        Account accountToUpdate = [SELECT Id FROM Account WHERE Id = :accountId];
+        // Update the account's name and industry
+        accountToUpdate.Name = newName;
+        accountToUpdate.Industry = newIndustry;
+        // Update the account in the database
+        update accountToUpdate;
         // Update the Account with the given Id with the new name and industry
     }
 
@@ -133,6 +145,12 @@ public with sharing class DMLOperations {
             // Set the Opportunity's Close Date to 3 months from today
             // Set the Opportunity's Amount to 50000
         // Upsert the opportunities List so that records are either updated or created
+        for(Opportunity opps : opportunities){
+            opps.StageName = 'Qualification';
+            opps.CloseDate = opps.CloseDate.addMonths(3);
+            opps.Amount = 50000;
+        }
+        upsert opportunities;
     }
 
     /**
@@ -148,6 +166,9 @@ public with sharing class DMLOperations {
         // Loop through each Opportunity name
             // Create an Opportunity with the given name
             // Add the Opportunity to the list
+        for(Opportunity opps : oppNames){
+            
+        }
     }
     
     /**
