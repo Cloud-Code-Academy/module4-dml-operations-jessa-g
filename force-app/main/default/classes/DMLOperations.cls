@@ -36,7 +36,7 @@ public with sharing class DMLOperations {
         myAccount.Name = 'Test Account';
         myAccount.BillingCity = 'Saint Louis';
         // Insert the Account into the database
-        insert myAccount;
+        Database.insert(myAccount, AccessLevel.SYSTEM_MODE);
         // Return the Id of the newly created Account
         return myAccount.Id;
     }
@@ -51,7 +51,7 @@ public with sharing class DMLOperations {
         // Create a new Account and set the fields inline
         Account mySecondAccount = new Account(Name = name, Industry = industry);
         // Insert the Account
-        insert mySecondAccount;
+        Database.insert(mySecondAccount, AccessLevel.SYSTEM_MODE);
     }
 
     
@@ -69,7 +69,7 @@ public with sharing class DMLOperations {
         // Set the AccountId field to the given accountId
         newContact.AccountId = accountId;
         // Insert the Contact into the database
-        insert newContact;
+        Database.insert(newContact, AccessLevel.SYSTEM_MODE);
         // Return the Id of the newly created Contact
         return newContact.Id;
     }
@@ -88,7 +88,7 @@ public with sharing class DMLOperations {
         // Update the Contact's last name
         contactToUpdate.LastName = newLastName;
         // Update the Contact in the database
-        update contactToUpdate;
+        Database.update(contactToUpdate, AccessLevel.SYSTEM_MODE);
     }
 
     /**
@@ -106,7 +106,7 @@ public with sharing class DMLOperations {
         // Update the Opportunity's stage
         oppToUpdate.StageName = newStage;
         // Update the Opportunity in the database
-        update oppToUpdate;
+        Database.update(oppToUpdate, AccessLevel.SYSTEM_MODE);
     }
 
     /**
@@ -126,7 +126,7 @@ public with sharing class DMLOperations {
         accountToUpdate.Name = newName;
         accountToUpdate.Industry = newIndustry;
         // Update the account in the database
-        update accountToUpdate;
+        Database.update(accountToUpdate, AccessLevel.SYSTEM_MODE);
         // Update the Account with the given Id with the new name and industry
     }
 
@@ -150,7 +150,7 @@ public with sharing class DMLOperations {
             opps.CloseDate = opps.CloseDate.addMonths(3);
             opps.Amount = 50000;
         }
-        upsert opportunities;
+        Database.upsert(opportunities, AccessLevel.SYSTEM_MODE);
     }
 
     /**
@@ -212,16 +212,16 @@ public with sharing class DMLOperations {
 		// if the Account exists, update the description
 		// otherwise, create a new Account and set the description
 		// Upsert the Account
-        Account account;
+        Account acc;
         if(!accounts.isEmpty()){
-            account = accounts[0];
-            account.Description = 'Updated Account';
-            upsert account;
+            acc = accounts[0];
+            acc.Description = 'Updated Account';
+            Database.upsert(acc, AccessLevel.SYSTEM_MODE);
         } else{
-            account  = new Account(Name = accountName, Description = 'New Account');
-            upsert account;
+            acc  = new Account(Name = accountName, Description = 'New Account');
+            Database.upsert(acc, AccessLevel.SYSTEM_MODE);
         }
-		return account;
+		return acc;
 	}
 
     /**
@@ -245,7 +245,7 @@ public with sharing class DMLOperations {
         List<Account> accounts = [SELECT Id FROM Account WHERE Name = :nameOfAccount];
         if(accounts.isEmpty()){
             Account newAccount = new Account(Name = nameOfAccount);
-            upsert newAccount;
+            Database.upsert(newAccount, AccessLevel.SYSTEM_MODE);
         } 
 
 		// Link the Contact to its Account using the Account Id
@@ -259,7 +259,7 @@ public with sharing class DMLOperations {
         }
 
 		// Upsert the Contacts
-        upsert contactsToUpsert;
+        Database.upsert(contactsToUpsert, AccessLevel.SYSTEM_MODE);
 	}
 
     /**
@@ -276,10 +276,10 @@ public with sharing class DMLOperations {
         }
 
         // Insert the Leads
-        insert listOLeads;
+        Database.insert(listOLeads, AccessLevel.SYSTEM_MODE);
 
         // Delete the Leads
-        delete listOLeads;
+        Database.delete(listOLeads, AccessLevel.SYSTEM_MODE);
     }
 
 
@@ -297,7 +297,7 @@ public with sharing class DMLOperations {
             Case caseToInsert = new Case(AccountId = accountId);
             listOCases.add(caseToInsert);
         }
-        insert listOCases;
-        delete listOCases;
+        Database.insert(listOCases, AccessLevel.SYSTEM_MODE);
+        Database.delete(listOCases, AccessLevel.SYSTEM_MODE);
     }
-}
+    }
